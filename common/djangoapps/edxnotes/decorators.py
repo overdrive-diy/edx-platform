@@ -2,11 +2,8 @@
 Decorators related to edXNotes.
 """
 from edxnotes.helpers import (
-    get_prefix,
-    get_user_id,
+    get_storage_url,
     generate_uid,
-    get_usage_id,
-    get_course_id,
 )
 from edxmako.shortcuts import render_to_string
 from django.conf import settings
@@ -31,10 +28,8 @@ def edxnotes(cls):
                 'uid': generate_uid(),
                 'params': {
                     # Use camelCase to name keys.
-                    'usageId': get_usage_id(),
-                    'courseId': get_course_id(),
-                    'prefix': get_prefix(),
-                    'user': get_user_id(),
+                    'usageId': unicode(self.scope_ids.usage_id).encode('utf-8'),
+                    'endpoint': get_storage_url(),
                     'debug': settings.DEBUG,
                 },
             })

@@ -13,7 +13,7 @@ def _now():
     return datetime.datetime.utcnow().replace(microsecond=0)
 
 
-def get_prefix():
+def get_storage_url():
     """
     Returns endpoint.
     """
@@ -23,29 +23,22 @@ def get_prefix():
     return url + "api/v1"
 
 
-def get_user_id():
-    """
-    Returns user id.
-    """
-    return "edx_user"
-
-
-def get_usage_id():
-    """
-    Returns usage id for the component.
-    """
-    return None
-
-
-def get_course_id():
-    """
-    Returns course id.
-    """
-    return None
-
-
 def generate_uid():
     """
     Generates unique id.
     """
     return uuid4().int  # pylint: disable=no-member
+
+
+def edxnotes_enabled_for_course(course):
+    """
+    Returns True if the edxnotes app is enabled for the course, False otherwise.
+
+    In order for the app to be enabled it must be:
+        1) enabled globally via FEATURES.
+        2) present in the course tab configuration.
+    """
+    tab_found = next((True for t in course.tabs if t['type'] == 'edxnotes'), False)
+    feature_enabled = settings.FEATURES.get('ENABLE_EDXNOTES')
+
+    return feature_enabled and tab_found

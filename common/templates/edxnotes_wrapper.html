@@ -1,5 +1,11 @@
 <%! import json %>
 <div id="edx-notes-wrapper-${uid}" class="edx-notes-wrapper">${content}</div>
+<%
+    if user:
+        params.update({'user': user.username})
+    if course:
+        params.update({'courseId': course.id})
+%>
 <script type="text/javascript">
     (function (require) {
         require(['js/edxnotes/notes'], function (Notes) {

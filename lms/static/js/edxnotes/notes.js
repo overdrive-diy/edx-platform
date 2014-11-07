@@ -27,7 +27,7 @@
         /**
          * Returns options for the annotator.
          * @param {jQuery Element} The container element.
-         * @param {String} params.prefix The endpoint of the store.
+         * @param {String} params.endpoint The endpoint of the store.
          * @param {String} params.user User id of annotation owner.
          * @param {String} params.usageId Usage Id of the component.
          * @param {String} params.courseId Course id.
@@ -44,7 +44,7 @@
 
             return {
                 store: {
-                    prefix: params.prefix,
+                    prefix: params.endpoint,
                     annotationData: defaultParams,
                     loadFromSearch: defaultParams
                 }
@@ -67,7 +67,7 @@
         /**
          * Factory method that returns Annotator.js instantiates.
          * @param {DOM Element} element The container element.
-         * @param {String} params.prefix The endpoint of the store.
+         * @param {String} params.endpoint The endpoint of the store.
          * @param {String} params.user User id of annotation owner.
          * @param {String} params.usageId Usage Id of the component.
          * @param {String} params.courseId Course id.
