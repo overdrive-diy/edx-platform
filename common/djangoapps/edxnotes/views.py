@@ -14,7 +14,7 @@ from edxnotes.helpers import (
 
 @login_required
 def edxnotes(request, course_id):
-    ''' Displays the edx notes. '''
+    ''' Displays the EdxNotes page. '''
     course_key = SlashSeparatedCourseKey.from_deprecated_string(course_id)
     course = get_course_with_access(request.user, 'load', course_key)
 
@@ -22,7 +22,6 @@ def edxnotes(request, course_id):
         raise Http404
 
     notes = get_notes(request.user.username, course.id)
-
     context = {
         # Use camelCase to name keys.
         'course': course,

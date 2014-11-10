@@ -5,12 +5,18 @@ Unit tests for the EdxNotes app.
 import collections
 from mock import patch
 from django.test import TestCase
+from django.core.urlresolvers import reverse
 from django.core.exceptions import ImproperlyConfigured
 
+from xmodule.modulestore.tests.factories import CourseFactory
+from student.tests.factories import UserFactory
 from . import helpers
 
 
-class HelpersTest(TestCase):
+class EdxNotesHelpersTest(TestCase):
+    """
+    Tests for EdxNotes helpers.
+    """
     def setUp(self):
         '''
         Setup a dummy course-like object with a tabs field that can be
@@ -49,3 +55,30 @@ class HelpersTest(TestCase):
 
         with patch.dict('django.conf.settings.EDXNOTES_INTERFACE', {'url': None}):
             self.assertRaises(ImproperlyConfigured, helpers.get_storage_url)
+
+
+class EdxNotesViewsTest(TestCase):
+    """
+    Tests for EdxNotes views.
+    """
+    def setUp(self):
+        super(EdxNotesViewsTest, self).setUp()
+        self.course = CourseFactory.create()
+        self.user = UserFactory.create(username="Bob", email="bob@example.com", password="edx")
+        self.client.login(username=self.user.username, password="edx")
+        self.notes_page_url = reverse("edxnotes", args=[unicode(self.course.id)])
+
+    def test_edxnotes_view_is_enabled(self):
+        """
+        Tests that appropriate view is received if EdxNotes feature is enabled.
+        """
+        response = self.client.get(self.notes_page_url)
+        self.assertIn('<h1>Notes</h1>', response.content)
+
+    @patch.dict('django.conf.settings.FEATURES', {'ENABLE_EDXNOTES': False})
+    def test_edxnotes_view_is_disabled(self):
+        """
+        Tests that 404 response is received if EdxNotes feature is disabled.
+        """
+        response = self.client.get(self.notes_page_url)
+        self.assertEqual(404, response.status_code)
