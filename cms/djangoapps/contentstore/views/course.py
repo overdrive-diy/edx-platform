@@ -927,9 +927,9 @@ def _config_course_settings(request, course_module, filter_tabs=True):
             component_types = tab_component_map.get(tab_type)
             found_ac_type = False
             for ac_type in component_types:
-                field_value = request.json[tab_type]['value']
+                field_value = request.json[ac_type]['value']
                 if field_value is True:
-                    if _add_tab(request, tab_type, course_module):
+                    if _add_tab(request, ac_type, course_module):
                         # Set this flag to avoid the tab removal code below.
                         filter_tabs = False
                     found_ac_type = True  # break
@@ -937,7 +937,7 @@ def _config_course_settings(request, course_module, filter_tabs=True):
                 # If we did not find a module type in the advanced settings,
                 # we may need to remove the tab from the course.
                 if not found_ac_type:  # Remove tab from the course if needed
-                    if _remove_tab(request, tab_type, course_module):
+                    if _remove_tab(request, ac_type, course_module):
                         # Indicate that tabs should *not* be filtered out of
                         # the metadata
                         filter_tabs = False

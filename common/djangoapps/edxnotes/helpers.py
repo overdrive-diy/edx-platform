@@ -56,10 +56,16 @@ def create_notes(count, user, course_id):
 
 
 def get_token():
+    """
+    Returns authentication token.
+    """
     return None
 
 
 def get_notes(username, course_id):
+    """
+    Returns all notes for the user.
+    """
     # TODO: Remove this line before merge!!!
     # create_notes(20, username, unicode(course_id).encode('utf-8'))
     url = get_storage_url() + "/search"
