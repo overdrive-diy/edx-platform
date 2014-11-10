@@ -20,7 +20,7 @@ define(['jquery', 'js/edxnotes/notes', 'jasmine-jquery'],
                 };
 
                 annotator = Notes.factory(wrapper[0], {
-                    prefix: 'a prefix',
+                    endpoint: 'a prefix',
                     user: 'a user',
                     usageId : 'an usage',
                     courseId: 'a course'
