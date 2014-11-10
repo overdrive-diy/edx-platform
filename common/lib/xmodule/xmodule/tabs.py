@@ -769,7 +769,6 @@ class CourseTabList(List):
             discussion_tab,
             WikiTab(),
             ProgressTab(),
-            EdxNotesTab(),
         ])
 
     @staticmethod

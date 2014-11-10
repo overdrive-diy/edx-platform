@@ -711,6 +711,22 @@ class CourseMetadataEditingTest(CourseTestCase):
         course = modulestore().get_course(self.course.id)
         self.assertNotIn(EXTRA_TAB_PANELS.get("open_ended"), course.tabs)
 
+    def test_course_settings_munge_tabs(self):
+        """
+        Test that adding and removing specific course settings adds and removes tabs.
+        """
+        self.assertNotIn(EXTRA_TAB_PANELS.get("edxnotes"), self.course.tabs)
+        self.client.ajax_post(self.course_setting_url, {
+            "edxnotes": {"value": True}
+        })
+        course = modulestore().get_course(self.course.id)
+        self.assertIn(EXTRA_TAB_PANELS.get("edxnotes"), course.tabs)
+        self.client.ajax_post(self.course_setting_url, {
+            "edxnotes": {"value": False}
+        })
+        course = modulestore().get_course(self.course.id)
+        self.assertNotIn(EXTRA_TAB_PANELS.get("edxnotes"), course.tabs)
+
 
 class CourseGraderUpdatesTest(CourseTestCase):
     """
