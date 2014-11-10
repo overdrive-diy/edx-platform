@@ -683,8 +683,9 @@ class TestCreateOrder(ModuleStoreTestCase):
         data = json.loads(response.content)
         self.assertEqual(data['override_custom_receipt_page'], "http://testserver/shoppingcart/postpay_callback/")
 
-        # Verify that the course ID is included in "merchant-defined data"
+        # Verify that the course ID and transaction type are included in "merchant-defined data"
         self.assertEqual(data['merchant_defined_data1'], unicode(self.course.id))
+        self.assertEqual(data['merchant_defined_data2'], "verified_certificate")
 
     def test_create_order_set_donation_amount(self):
         # Verify the student so we don't need to submit photos
