@@ -687,6 +687,27 @@ class TestCreateOrder(ModuleStoreTestCase):
         self.assertEqual(data['merchant_defined_data1'], unicode(self.course.id))
         self.assertEqual(data['merchant_defined_data2'], "verified_certificate")
 
+    def test_create_order_already_verified_prof_ed(self):
+        # Verify the student so we don't need to submit photos
+        self._verify_student()
+
+        # Create a prof ed course
+        course = CourseFactory.create()
+        CourseModeFactory(mode_slug="professional", course_id=course.id)
+
+        # Create an order for a prof ed course
+        url = reverse('verify_student_create_order')
+        params = {
+            'course_id': unicode(course.id)
+        }
+        response = self.client.post(url, params)
+        self.assertEqual(response.status_code, 200)
+
+        # Verify that the course ID and transaction type are included in "merchant-defined data"
+        data = json.loads(response.content)
+        self.assertEqual(data['merchant_defined_data1'], unicode(course.id))
+        self.assertEqual(data['merchant_defined_data2'], "professional_ed")
+
     def test_create_order_set_donation_amount(self):
         # Verify the student so we don't need to submit photos
         self._verify_student()

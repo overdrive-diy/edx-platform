@@ -234,10 +234,18 @@ def create_order(request):
         reverse("shoppingcart.views.postpay_callback")
     )
 
+    extra_data = [
+        unicode(course_id),
+        (
+            "professional_ed" if current_mode.slug == "professional"
+            else "verified_certificate"
+        )
+    ]
+
     params = get_signed_purchase_params(
         cart,
         callback_url=callback_url,
-        extra_data=[unicode(course_id), "verified_certificate"]
+        extra_data=extra_data
     )
 
     params['success'] = True
