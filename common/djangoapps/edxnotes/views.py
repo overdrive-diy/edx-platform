@@ -6,6 +6,8 @@ from opaque_keys.edx.locations import SlashSeparatedCourseKey
 from courseware.courses import get_course_with_access
 from edxnotes.helpers import (
     get_storage_url,
+    get_token,
+    get_notes,
     edxnotes_enabled_for_course
 )
 
@@ -19,11 +21,14 @@ def edxnotes(request, course_id):
     if not edxnotes_enabled_for_course(course):
         raise Http404
 
+    notes = get_notes(request.user.username, course.id)
+
     context = {
         # Use camelCase to name keys.
         'course': course,
         'storage': get_storage_url(),
-        'token': '',
+        'notes': notes,
+        'token': get_token(),
         'debug': settings.DEBUG,
     }
 

@@ -31,12 +31,14 @@
          * @param {String} params.user User id of annotation owner.
          * @param {String} params.usageId Usage Id of the component.
          * @param {String} params.courseId Course id.
+         * @param {String} params.token An authentication token.
          * @return {Object} Options.
          **/
         getOptions = function (element, params) {
             var usageId = params.usageId || getUsageId(element),
                 courseId = params.courseId || getCourseId(element),
                 defaultParams = {
+                    token: params.token,
                     user: params.user,
                     usage_id: usageId,
                     course_id: courseId
@@ -71,6 +73,7 @@
          * @param {String} params.user User id of annotation owner.
          * @param {String} params.usageId Usage Id of the component.
          * @param {String} params.courseId Course id.
+         * @param {String} params.token An authentication token.
          * @return {Object} An instance of Annotator.js.
          **/
         getAnnotator = function (element, params) {

@@ -2,11 +2,11 @@
 Unit tests for the EdxNotes app.
 """
 
+import collections
 from mock import patch
 from django.test import TestCase
 from django.core.exceptions import ImproperlyConfigured
 
-import collections
 from . import helpers
 
 
