@@ -4,6 +4,7 @@ Helper methods related to EdxNotes.
 import datetime
 from uuid import uuid4
 from django.conf import settings
+from django.core.exceptions import ImproperlyConfigured
 
 
 def _now():
@@ -17,10 +18,14 @@ def get_storage_url():
     """
     Returns endpoint.
     """
-    url = settings.EDXNOTES_INTERFACE["url"] or "/"
-    if not url.endswith("/"):
-        url += "/"
-    return url + "api/v1"
+    interface = settings.EDXNOTES_INTERFACE if hasattr(settings, 'EDXNOTES_INTERFACE') else False
+    if interface and interface.get("url", False):
+        url = settings.EDXNOTES_INTERFACE["url"]
+        if not url.endswith("/"):
+            url += "/"
+        return url + "api/v1"
+    else:
+        raise ImproperlyConfigured("No endpoint was provided for EdxNotes.")
 
 
 def generate_uid():
