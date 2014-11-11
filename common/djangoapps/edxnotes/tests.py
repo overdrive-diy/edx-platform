@@ -5,17 +5,14 @@ Unit tests for the EdxNotes app.
 import collections
 from mock import patch
 from django.test import TestCase
-from django.test.utils import override_settings
 from django.core.urlresolvers import reverse
 from django.core.exceptions import ImproperlyConfigured
 
-from courseware.tests.modulestore_config import TEST_DATA_MIXED_MODULESTORE
 from xmodule.modulestore.tests.factories import CourseFactory
 from student.tests.factories import UserFactory
 from . import helpers
 
 
-@override_settings(MODULESTORE=TEST_DATA_MIXED_MODULESTORE)
 class EdxNotesHelpersTest(TestCase):
     """
     Tests for EdxNotes helpers.
@@ -60,7 +57,6 @@ class EdxNotesHelpersTest(TestCase):
             self.assertRaises(ImproperlyConfigured, helpers.get_storage_url)
 
 
-@override_settings(MODULESTORE=TEST_DATA_MIXED_MODULESTORE)
 class EdxNotesViewsTest(TestCase):
     """
     Tests for EdxNotes views.
