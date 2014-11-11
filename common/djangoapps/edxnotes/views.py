@@ -1,6 +1,7 @@
 """
 Views related to EdxNotes.
 """
+import json
 from django.contrib.auth.decorators import login_required
 from django.http import Http404
 from django.conf import settings
@@ -31,7 +32,7 @@ def edxnotes(request, course_id):
         "storage": get_storage_url(),
         "notes": notes,
         "token": get_token(),
-        "debug": settings.DEBUG,
+        "debug": json.dumps(settings.DEBUG),
     }
 
     return render_to_response("edxnotes.html", context)

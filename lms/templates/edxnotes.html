@@ -7,55 +7,21 @@
     <%static:css group='style-course-vendor'/>
     <%static:css group='style-course'/>
     <%static:js group='courseware'/>
-    <style>
-        .edxnotes-item {
-            padding-top: 2em;
-            margin-top: 2em;
-            border-top: 1px solid #ccc;
-        }
-        .edxnotes-item:first-child {
-            padding-top: 0;
-            margin-top: 0;
-            border-top: 0;
-        }
-        .edxnotes-item:after{
-            content: '';
-            display:block;
-            clear: both;
-            height: 0;
-        }
-        .col-left {
-            float: left;
-            width: 73%;
-        }
-        .col-right {
-            float: right;
-            width: 23%;
-        }
-        .note-text {
-            background-color: #F5E4D1;
-        }
-        .note-quote {
-            background-color: #F6E0A0;
-        }
-        h6 {
-            color: blue;
-            text-transform: uppercase;
-        }
-        p {
-            color: grey;
-        }
-    </style>
 </%block>
 
 <%include file="/courseware/course_navigation.html" args="active_page='edxnotes'" />
-
-<section class="container">
-    <div class="edxnotes-wrapper">
-        <h1>${_('Notes')}</h1>
-        <section id="edxnotes-notes-list">${_('You do not have any notes.')}</section>
-</section>
-
+<div class="container">
+    <div class="edxnotes-page-wrapper">
+        <div class="course-info content-primary">
+            <h1>${_('Notes')}</h1>
+            <small>${_("Highlights and personal notes you've made within the course")}</small>
+            <section class="no-content is-hidden">${_('You do not have any notes.')}</section>
+            <div class="ui-loading">
+                <p><span class="spin"><i class="icon-refresh"></i></span> <span class="copy">${_("Loading...")}</span></p>
+            </div>
+        </div>
+    </div>
+</div>
 
 ## Include Underscore templates
 <%block name="header_extras">
@@ -70,10 +36,7 @@
 <script type="text/javascript">
     (function (require) {
         require(['js/edxnotes/views/notes_page'], function (NotesFactory) {
-            var pageView = new NotesFactory(
-                document.getElementById('edxnotes-notes-list'),
-                ${notes}
-            );
+            var pageView = new NotesFactory(${notes}, ${debug});
         });
     }).call(this, require || RequireJS.require);
 </script>

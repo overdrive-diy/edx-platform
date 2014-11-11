@@ -7,14 +7,16 @@
 <% } %>
 </div>
 <div class="col-right">
-<% if (text && quote) { %>
-    <h6><%- gettext("Highlighted & Noted in:") %></h6>
-<% } else if (text) { %>
-    <h6><%- gettext("Highlighted in:") %></h6>
-<% } else if (quote) { %>
-    <h6><%- gettext("Noted in:") %></h6>
-<% } %>
-    <p><a href="<%= unit.url %>" title="<%- gettext('Visit the unit.') %>"><%- unit.display_name %></a></p>
-    <h6><%- gettext("Last Edited:") %></h6>
-    <p><%- updated %></p>
+    <dl>
+    <% if (text && quote) { %>
+        <dt><%- gettext("Highlighted & Noted in:") %></dt>
+    <% } else if (text) { %>
+        <dt><%- gettext("Highlighted in:") %></dt>
+    <% } else if (quote) { %>
+        <dt><%- gettext("Noted in:") %></dt>
+    <% } %>
+        <dd><a href="<%= unit.url %>" title="<%- gettext('Visit the unit.') %>"><%- unit.display_name %></a></dd>
+        <dt><%- gettext("Last Edited:") %></dt>
+        <dd><%- updated %></dd>
+    </dl>
 </div>

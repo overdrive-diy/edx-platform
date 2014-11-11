@@ -1,0 +1,88 @@
+.edxnotes-page-wrapper {
+  font-size: 1em;
+  line-height: 1.6em;
+
+  .course-info {
+    @extend .content;
+
+    header {
+      @extend .clearfix;
+      @extend h1.top-header;
+
+      h1 {
+        @include float(left);
+        font-size: 1em;
+        font-weight: 100;
+        margin: 0;
+      }
+    }
+
+    h1 {
+      margin-bottom: 0;
+    }
+
+    h1 + small {
+      display: block;
+      margin-bottom: 2em;
+    }
+  }
+
+  .edxnotes-item {
+    @extend .clearfix;
+    padding-top: 2em;
+    margin-top: 2em;
+    border-top: 1px solid #ccc;
+  }
+
+  .edxnotes-item:first-child {
+    padding-top: 0;
+    margin-top: 0;
+    border-top: 0;
+  }
+
+  .col-left {
+    float: left;
+    width: 73%;
+  }
+
+  .col-right {
+    float: right;
+    width: 25%;
+
+    dl {
+      padding: 0;
+      margin: 0;
+      font-size: 0.9em;
+
+      dt, dd {
+        padding: 0;
+        margin: 0;
+      }
+      dt {
+        color: $gray-l1;
+        font-weight: 600;
+        text-transform: uppercase;
+      }
+
+      dd {
+        color: $gray-d4;
+        padding-bottom: 1em;
+
+        a {
+          font-weight: 700;
+        }
+      }
+    }
+  }
+
+  .note-text {
+    background-color: #F5E4D1;
+    padding: 2em;
+  }
+
+  .note-quote {
+    background-color: #F6E0A0;
+    padding: 2em;
+    font-weight: 600;
+  }
+}

@@ -25,13 +25,13 @@
           "backbone": {
               deps: ["underscore", "jquery"],
               exports: "Backbone"
-          },
+          }
         },
         map: {
-          "js/edxnotes/notes": {
+          "js/edxnotes/views/notes": {
             "annotator": "annotator_1.2.9"
           },
-          "js/edxnotes/shim": {
+          "js/edxnotes/views/shim": {
             "annotator": "annotator_1.2.9"
           }
         }
