@@ -1,6 +1,6 @@
 ;(function (define, gettext, undefined) {
     'use strict';
-    define(['jquery', 'underscore', 'backbone'], function ($, _, Backbone) {
+    define(['jquery', 'underscore', 'backbone', 'date'], function ($, _, Backbone) {
         var NoteItemView = Backbone.View.extend({
             tagName: 'article',
             className: 'edxnotes-item',
@@ -8,7 +8,7 @@
                 this.template = _.template($('#note-item-tpl').text());
             },
             render: function () {
-                var context = $.extend(true, {}, this.model.attributes);
+                var context = this.model.toJSON();
                 this.$el.html(this.template(context));
                 return this;
             }
