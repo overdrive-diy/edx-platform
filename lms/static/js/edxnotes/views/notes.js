@@ -1,7 +1,7 @@
 ;(function (define, $, _, undefined) {
     'use strict';
     define([
-        'annotator', 'js/edxnotes/logger', 'js/edxnotes/shim'
+        'annotator', 'js/edxnotes/utils/logger', 'js/edxnotes/views/shim'
     ], function (Annotator, Logger) {
         var plugins = ['Store'],
             getUsageId, getCourseId, getOptions, setupPlugins, getAnnotator;

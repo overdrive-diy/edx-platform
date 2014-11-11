@@ -1,0 +1,20 @@
+<div class="col-left">
+<% if (text) { %>
+    <div class="note-text">&hellip; <%- text %> &hellip;</div>
+<% } %>
+<% if (quote) { %>
+    <div class="note-quote"><%- quote %></div>
+<% } %>
+</div>
+<div class="col-right">
+<% if (text && quote) { %>
+    <h6><%- gettext("Highlighted & Noted in:") %></h6>
+<% } else if (text) { %>
+    <h6><%- gettext("Highlighted in:") %></h6>
+<% } else if (quote) { %>
+    <h6><%- gettext("Noted in:") %></h6>
+<% } %>
+    <p><a href="<%= unit.url %>" title="<%- gettext('Visit the unit.') %>"><%- unit.display_name %></a></p>
+    <h6><%- gettext("Last Edited:") %></h6>
+    <p><%- updated %></p>
+</div>

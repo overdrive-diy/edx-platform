@@ -3,9 +3,21 @@ Helper methods related to EdxNotes.
 """
 import json
 import requests
+import logging
 from uuid import uuid4
 from django.conf import settings
+from django.core.urlresolvers import reverse
 from django.core.exceptions import ImproperlyConfigured
+from django.utils.translation import ugettext as _
+from xmodule.modulestore.django import modulestore
+from lms.lib.xblock.runtime import unquote_slashes
+from xmodule.modulestore.exceptions import ItemNotFoundError
+# TODO: Remove these imports before merge!!!
+from lms.lib.xblock.runtime import quote_slashes
+import random
+# end TODO
+
+log = logging.getLogger(__name__)
 
 
 # To start stub server on devstack:
@@ -16,28 +28,51 @@ from django.core.exceptions import ImproperlyConfigured
 # !!! Do not forget comment it out again after that and restart the server.
 
 # TODO: Remove this function before merge!!!
-def _get_dummy_notes(count=1, user="dummy-user-id", course_id="dummy-course-id"):
+def _get_dummy_notes(count, user, course):
     """
     Returns a list of dummy notes.
     """
-    return [_get_dummy_note(user=user, course_id=course_id) for i in xrange(count)]  # pylint: disable=unused-variable
+    html_modules = modulestore().get_items(
+        course.id, qualifiers={
+            'category': 'html',
+        },
+    )
+    usage_keys = [quote_slashes(unicode(module.scope_ids.usage_id)) for module in html_modules]
+    return [_get_dummy_note(user=user, course_id=unicode(course.id), usage_keys=usage_keys) for i in xrange(count)]  # pylint: disable=unused-variable
+# end TODO
 
 
 # TODO: Remove this function before merge!!!
-def _get_dummy_note(user="dummy-user-id", course_id="dummy-course-id"):
+def _get_dummy_note(user="dummy-user-id", course_id="dummy-course-id", usage_keys=[]):
     """
     Returns a single dummy note.
     """
     nid = uuid4().hex
+    text = (
+        "Lorem Ipsum is simply dummy text of the printing and typesetting"
+        "industry. Lorem Ipsum has been the industry's standard dummy text ever"
+        "since the 1500s, when an unknown printer took a galley of type and"
+        "scrambled it to make a type specimen book. It has survived not only"
+        "five centuries, but also the leap into electronic typesetting, remaining"
+        "essentially unchanged. It was popularised in the 1960s with the release"
+        "of Letraset sheets containing Lorem Ipsum passages, and more recently"
+        "with desktop publishing software like Aldus PageMaker including"
+        "versions of Lorem Ipsum."
+    )
+    quote = (
+        "Lorem Ipsum is simply dummy text of the printing and typesetting"
+        "industry. Lorem Ipsum has been the industry's standard dummy text ever"
+        "since the 1500s, when an unknown printer took a galley of type and"
+        "scrambled it to make a type specimen book."
+    )
+
     return {
         "id": nid,
-        "created": "2014-10-31T10:05:00.000000",
-        "updated": "2014-10-31T10:50:00.101010",
         "user": user,
-        "usage_id": "dummy-usage-id",
+        "usage_id": random.choice(usage_keys),
         "course_id": course_id,
-        "text": "dummy note text " + nid,
-        "quote": "dummy note quote",
+        "text": text,
+        "quote": quote,
         "ranges": [
             {
                 "start": "/p[1]",
@@ -47,12 +82,14 @@ def _get_dummy_note(user="dummy-user-id", course_id="dummy-course-id"):
             }
         ],
     }
+# end TODO
 
 
 # TODO: Remove this function before merge!!!
-def create_notes(count, user, course_id):
-    dummy_notes = _get_dummy_notes(count=count, user=user, course_id=course_id)
+def create_notes(count, user, course):
+    dummy_notes = _get_dummy_notes(count, user, course)
     requests.post(settings.EDXNOTES_INTERFACE["url"] + "create_notes", data=json.dumps(dummy_notes))
+# end TODO
 
 
 def get_token():
@@ -62,21 +99,78 @@ def get_token():
     return None
 
 
-def get_notes(username, course_id):
+def get_notes(username, course):
     """
     Returns all notes for the user.
     """
     # TODO: Remove this line before merge!!!
-    # create_notes(20, username, unicode(course_id).encode('utf-8'))
-    url = get_storage_url() + "/search"
+    # create_notes(20, username, course)
+    # end TODO
+    url = get_storage_url("/annotations")
     response = requests.get(url, params={
         'user': username,
-        'course_id': unicode(course_id).encode('utf-8'),
+        'course_id': unicode(course.id).encode('utf-8'),
     })
-    return response.content
+
+    try:
+        collection = json.loads(response.content)
+    except ValueError:
+        return json.dumps([])
+
+    # if collection is empty, just return it.
+    if not collection:
+        return response.content
+
+    store = modulestore()
+    with store.bulk_operations(course.id):
+        for model in collection:
+            unquoted_usage_key_string = unquote_slashes(model['usage_id'])
+            usage_key = course.id.make_usage_key_from_deprecated_string(unquoted_usage_key_string)
+            display_name, url = get_parent_info(course, store, usage_key)
+            model.update({
+                'unit': {
+                    'display_name': display_name,
+                    'url': url,
+                }
+            })
+
+    return json.dumps(collection)
 
 
-def get_storage_url():
+def get_parent(store, child_location):
+    """
+    Returns parent module for the passed `child_location`.
+    """
+    location = store.get_parent_location(child_location)
+    if not location:
+        log.warning("Parent location for the module not found: %s", child_location)
+        return
+    try:
+        return store.get_item(location)
+    except ItemNotFoundError:
+        log.warning("Parent module not found: %s", location)
+        return
+
+
+def get_parent_info(course, store, child_location):
+    """
+    Returns dispay_name and url for the parent module.
+    """
+    parent = get_parent(store, child_location)
+
+    if not parent:
+        return (None, None)
+
+    display_name = parent.display_name_with_default
+    url = reverse('jump_to', kwargs={
+        'course_id': course.id.to_deprecated_string(),
+        'location': parent.location.to_deprecated_string(),
+    })
+
+    return (display_name, url)
+
+
+def get_storage_url(path=""):
     """
     Returns endpoint.
     """
@@ -85,9 +179,12 @@ def get_storage_url():
         url = interface["url"]
         if not url.endswith("/"):
             url += "/"
-        return url + "api/v1"
+        if not path.startswith("/"):
+            path = "/" + path
+
+        return url + "api/v1" + path
     else:
-        raise ImproperlyConfigured("No endpoint was provided for EdxNotes.")
+        raise ImproperlyConfigured(_("No endpoint was provided for EdxNotes."))
 
 
 def generate_uid():

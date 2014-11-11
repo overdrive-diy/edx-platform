@@ -1,4 +1,4 @@
-define(['jquery', 'js/edxnotes/notes', 'jasmine-jquery'],
+define(['jquery', 'js/edxnotes/views/notes', 'jasmine-jquery'],
     function($, Notes) {
         'use strict';
 

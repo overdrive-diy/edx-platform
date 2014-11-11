@@ -24,7 +24,7 @@ def edxnotes(request, course_id):
     if not edxnotes_enabled_for_course(course):
         raise Http404
 
-    notes = get_notes(request.user.username, course.id)
+    notes = get_notes(request.user.username, course)
     context = {
         # Use camelCase to name keys.
         "course": course,
