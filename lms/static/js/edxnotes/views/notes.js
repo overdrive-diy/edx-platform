@@ -4,25 +4,7 @@
         'annotator', 'js/edxnotes/utils/logger', 'js/edxnotes/views/shim'
     ], function (Annotator, Logger) {
         var plugins = ['Store'],
-            getUsageId, getCourseId, getOptions, setupPlugins, getAnnotator;
-
-        /**
-         * Returns Usage id for the component.
-         * @param {jQuery Element} The container element.
-         * @return {String} Usage id.
-         **/
-        getUsageId = function (element) {
-            return element.closest('[data-usage-id]').data('usage-id');
-        };
-
-        /**
-         * Returns course id for the component.
-         * @param {jQuery Element} The container element.
-         * @return {String} Course id.
-         **/
-        getCourseId = function (element) {
-            return element.closest('[data-course-id]').data('course-id');
-        };
+            getOptions, setupPlugins, getAnnotator;
 
         /**
          * Returns options for the annotator.
@@ -35,14 +17,12 @@
          * @return {Object} Options.
          **/
         getOptions = function (element, params) {
-            var usageId = params.usageId || getUsageId(element),
-                courseId = params.courseId || getCourseId(element),
-                defaultParams = {
-                    token: params.token,
-                    user: params.user,
-                    usage_id: usageId,
-                    course_id: courseId
-                };
+            var defaultParams = {
+                token: params.token,
+                user: params.user,
+                usage_id: params.usageId,
+                course_id: params.courseId
+            };
 
             return {
                 store: {

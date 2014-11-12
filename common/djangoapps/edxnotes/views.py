@@ -25,11 +25,11 @@ def edxnotes(request, course_id):
     if not edxnotes_enabled_for_course(course):
         raise Http404
 
-    notes = get_notes(request.user.username, course)
+    notes = get_notes(request.user, course)
     context = {
         # Use camelCase to name keys.
         "course": course,
-        "storage": get_storage_url(),
+        "endpoint": get_storage_url(),
         "notes": notes,
         "token": get_token(),
         "debug": json.dumps(settings.DEBUG),

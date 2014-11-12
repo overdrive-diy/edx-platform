@@ -5,15 +5,14 @@ import json
 import requests
 import logging
 from uuid import uuid4
+from courseware.access import has_access
 from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.core.exceptions import ImproperlyConfigured
 from django.utils.translation import ugettext as _
 from xmodule.modulestore.django import modulestore
-from lms.lib.xblock.runtime import unquote_slashes
 from xmodule.modulestore.exceptions import ItemNotFoundError
 # TODO: Remove these imports before merge!!!
-from lms.lib.xblock.runtime import quote_slashes
 import random
 # end TODO
 
@@ -37,7 +36,7 @@ def _get_dummy_notes(count, user, course):
             'category': 'html',
         },
     )
-    usage_keys = [quote_slashes(unicode(module.scope_ids.usage_id)) for module in html_modules]
+    usage_keys = [unicode(module.scope_ids.usage_id) for module in html_modules]
     return [_get_dummy_note(user=user, course_id=unicode(course.id), usage_keys=usage_keys) for i in xrange(count)]  # pylint: disable=unused-variable
 # end TODO
 
@@ -48,31 +47,38 @@ def _get_dummy_note(user="dummy-user-id", course_id="dummy-course-id", usage_key
     Returns a single dummy note.
     """
     nid = uuid4().hex
-    text = (
-        "Lorem Ipsum is simply dummy text of the printing and typesetting"
-        "industry. Lorem Ipsum has been the industry's standard dummy text ever"
-        "since the 1500s, when an unknown printer took a galley of type and"
-        "scrambled it to make a type specimen book. It has survived not only"
-        "five centuries, but also the leap into electronic typesetting, remaining"
-        "essentially unchanged. It was popularised in the 1960s with the release"
-        "of Letraset sheets containing Lorem Ipsum passages, and more recently"
-        "with desktop publishing software like Aldus PageMaker including"
-        "versions of Lorem Ipsum."
-    )
-    quote = (
-        "Lorem Ipsum is simply dummy text of the printing and typesetting"
-        "industry. Lorem Ipsum has been the industry's standard dummy text ever"
-        "since the 1500s, when an unknown printer took a galley of type and"
-        "scrambled it to make a type specimen book."
-    )
+    text = [
+        (
+            "Lorem Ipsum is simply dummy text of the printing and typesetting "
+            "industry. Lorem Ipsum has been the industry's standard dummy text ever "
+            "since the 1500s, when an unknown printer took a galley of type and "
+            "scrambled it to make a type specimen book. It has survived not only "
+            "five centuries, but also the leap into electronic typesetting, remaining "
+            "essentially unchanged. It was popularised in the 1960s with the release "
+            "of Letraset sheets containing Lorem Ipsum passages, and more recently "
+            "with desktop publishing software like Aldus PageMaker including "
+            "versions of Lorem Ipsum."
+        ),
+        "test",
+        "test test",
+    ]
+    quote = [
+        (
+            "Lorem Ipsum is simply dummy text of the printing and typesetting "
+            "industry. Lorem Ipsum has been the industry's standard dummy text ever "
+            "since the 1500s, when an unknown printer took a galley of type and "
+            "scrambled it to make a type specimen book. "
+        ),
+        ""
+    ]
 
     return {
         "id": nid,
         "user": user,
         "usage_id": random.choice(usage_keys),
         "course_id": course_id,
-        "text": text,
-        "quote": quote,
+        "text": random.choice(text),
+        "quote": random.choice(quote),
         "ranges": [
             {
                 "start": "/p[1]",
@@ -99,16 +105,16 @@ def get_token():
     return None
 
 
-def get_notes(username, course):
+def get_notes(user, course):
     """
     Returns all notes for the user.
     """
     # TODO: Remove this line before merge!!!
-    # create_notes(20, username, course)
+    # create_notes(20, user.username, course)
     # end TODO
     url = get_storage_url("/annotations")
     response = requests.get(url, params={
-        'user': username,
+        'user': user.username,
         'course_id': unicode(course.id).encode('utf-8'),
     })
 
@@ -122,10 +128,22 @@ def get_notes(username, course):
         return response.content
 
     store = modulestore()
+    orphans = store.get_orphans(course.id)
+    filtered_collection = list()
     with store.bulk_operations(course.id):
         for model in collection:
-            unquoted_usage_key_string = unquote_slashes(model['usage_id'])
-            usage_key = course.id.make_usage_key_from_deprecated_string(unquoted_usage_key_string)
+            usage_key = course.id.make_usage_key_from_deprecated_string(model['usage_id'])
+            item = store.get_item(usage_key)
+
+            if not has_access(user, 'load', item, course_key=course.id):
+                continue
+
+            if is_orphan(item, model, orphans):
+                # Skip the note if quote is empty and item is orphan.
+                if not model['quote']:
+                    continue
+                model['text'] = None
+
             display_name, url = get_parent_info(course, store, usage_key)
             model.update({
                 'unit': {
@@ -133,17 +151,34 @@ def get_notes(username, course):
                     'url': url,
                 }
             })
+            filtered_collection.append(model)
 
-    return json.dumps(collection)
+    return json.dumps(filtered_collection)
 
 
-def get_parent(store, child_location):
+def is_orphan(item, model, orphans):
     """
-    Returns parent module for the passed `child_location`.
+    Checks if current item is orphaned.
     """
-    location = store.get_parent_location(child_location)
+    if item in orphans:
+        return True
+    return False
+
+
+def get_item_content(item):
+    """
+    Returns content for the appropriate item.
+    """
+    return getattr(item, 'data', '')
+
+
+def get_parent(store, usage_key):
+    """
+    Returns parent module for the passed `usage_key`.
+    """
+    location = store.get_parent_location(usage_key)
     if not location:
-        log.warning("Parent location for the module not found: %s", child_location)
+        log.warning("Parent location for the module not found: %s", usage_key)
         return
     try:
         return store.get_item(location)
@@ -152,12 +187,11 @@ def get_parent(store, child_location):
         return
 
 
-def get_parent_info(course, store, child_location):
+def get_parent_info(course, store, usage_key):
     """
     Returns dispay_name and url for the parent module.
     """
-    parent = get_parent(store, child_location)
-
+    parent = get_parent(store, usage_key)
     if not parent:
         return (None, None)
 

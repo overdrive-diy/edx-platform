@@ -1,6 +1,6 @@
 ;(function (define, gettext, interpolate, undefined) {
     'use strict';
-    define(['jquery', 'backbone'], function ($, Backbone) {
+    define(['jquery', 'backbone', 'date'], function ($, Backbone) {
         var NoteModel = Backbone.Model.extend({
             defaults: {
                 'id': null,
@@ -31,6 +31,11 @@
                 return attributes;
             },
 
+            /**
+             * Returns UTC Date for the passed `dateString`
+             * @param {String} dateString String used to convert to UTC date.
+             * @return {Date.UTC}
+             */
             getUTCDate: function (dateString) {
                 var date = new Date(dateString);
                 return Date.UTC(
@@ -40,6 +45,12 @@
                 );
             },
 
+            /**
+             * Returns date string in the following format:
+             * `November 11, 2014 at 12:59PM`.
+             * @param {Date.UTC} utcDate Date used to convert to date string.
+             * @return {String}
+             */
             getDateTime: function (utcDate) {
                 var datetime = new Date(utcDate),
                     datetimeString = gettext('%(date)s at %(time)s');
@@ -50,7 +61,11 @@
                 }, true);
             },
 
-            toJSON: function () {
+            /**
+             * Returns context for the views.
+             * @return {Object}
+             */
+            toContext: function () {
                 return $.extend(true, {}, this.attributes, {
                     created: this.getDateTime(this.get('created')),
                     updated: this.getDateTime(this.get('updated'))

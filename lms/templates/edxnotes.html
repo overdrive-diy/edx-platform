@@ -4,21 +4,24 @@
 
 <%block name="pagetitle">${_("Notes")}</%block>
 <%block name="headextra">
-    <%static:css group='style-course-vendor'/>
     <%static:css group='style-course'/>
-    <%static:js group='courseware'/>
 </%block>
 
 <%include file="/courseware/course_navigation.html" args="active_page='edxnotes'" />
 <div class="container">
     <div class="edxnotes-page-wrapper">
-        <div class="course-info content-primary">
-            <h1>${_('Notes')}</h1>
-            <small>${_("Highlights and personal notes you've made within the course")}</small>
-            <section class="no-content is-hidden">${_('You do not have any notes.')}</section>
+        <div class="course-info">
+            <header>
+                <h1>${_('Notes')}</h1>
+                <small>${_("Highlights and personal notes you've made within the course")}</small>
+            </header>
+        % if notes:
             <div class="ui-loading">
                 <p><span class="spin"><i class="icon-refresh"></i></span> <span class="copy">${_("Loading...")}</span></p>
             </div>
+        % else:
+            <section class="no-content">${_('You do not have any notes.')}</section>
+        % endif
         </div>
     </div>
 </div>
@@ -32,35 +35,21 @@
 % endfor
 </%block>
 
+% if notes:
 <%block name="js_extra">
 <script type="text/javascript">
     (function (require) {
-        require(['js/edxnotes/views/notes_page'], function (NotesFactory) {
-            var pageView = new NotesFactory(${notes}, ${debug});
+        require(['js/edxnotes/views/page_factory'], function (NotesFactory) {
+            var pageView = new NotesFactory({
+                notesList: ${notes},
+                debugMode: ${debug},
+                authToken: '${token}',
+                user: '${user.username}',
+                courseId: '${course.id}',
+                endpoint: '${endpoint}'
+            });
         });
     }).call(this, require || RequireJS.require);
 </script>
 </%block>
-
-
-## <dl>
-##     % if user:
-##         <dt>username</dt>
-##         <dd>${user.username}</dd>
-##         <dt>email</dt>
-##         <dd>${user.email}</dd>
-##     % endif
-##     % if course:
-##         <dt>courseId</dt>
-##         <dd>${course.id}</dd>
-##     % endif
-##         <dt>storage</dt>
-##         <dd>${storage}</dd>
-##         <dt>token</dt>
-##         <dd>${token}</dd>
-##         <dt>debug</dt>
-##         <dd>${debug}</dd>
-##         <dt>notes</dt>
-##         <dd>${notes}</dd>
-##     </dl>
-## </div>
+% endif
