@@ -180,31 +180,39 @@ def add_users_to_cohort(request, course_key_string, cohort_id):
             course_key_string=course_key_string
         ))
 
-    users = request.POST.get('users', '')
+    # NOTE: The following implementation is to test performance by
+    # using constant (rather than O(N)) database interactions.  This
+    # is acheived by the `cohort.users.add(*users_to_cohort)`
+    # statement instead of calling `add_user_to_cohort` in a
+    # one-by-one way.  This means events won't be emitted, and we
+    # aren't handling non-existent users in the same way.
+    users = User.objects.filter(
+        username__in=split_by_comma_and_whitespace(request.POST.get('users', '')),
+    ).order_by('username').prefetch_related('course_groups')
+
     added = []
     changed = []
     present = []
     unknown = []
-    for username_or_email in split_by_comma_and_whitespace(users):
-        if not username_or_email:
-            continue
-
+    users_to_cohort = []
+    for user in users:
         try:
-            (user, previous_cohort) = cohorts.add_user_to_cohort(cohort, username_or_email)
-            info = {
-                'username': user.username,
-                'name': user.profile.name,
-                'email': user.email,
-            }
-            if previous_cohort:
-                info['previous_cohort'] = previous_cohort
-                changed.append(info)
+            if user.course_groups.get(course_id=course_key) == cohort:
+                present.append({'username': user.username,
+                                'name': user.profile.name,
+                                'email': user.email})
             else:
-                added.append(info)
-        except ValueError:
-            present.append(username_or_email)
-        except User.DoesNotExist:
-            unknown.append(username_or_email)
+                changed.append({'username': user.username,
+                                'name': user.profile.name,
+                                'email': user.email})
+                users_to_cohort.append(user)
+        except CourseUserGroup.DoesNotExist:
+            added.append({'username': user.username,
+                          'name': user.profile.name,
+                          'email': user.email})
+            users_to_cohort.append(user)
+
+    cohort.users.add(*users_to_cohort)
 
     return json_http_response({'success': True,
                                'added': added,
