@@ -23,6 +23,19 @@ def url_class(is_active):
   user_is_enrolled = user.is_authenticated() and CourseEnrollment.is_enrolled(user, course.id)
 %>
 
+% if staff_access:
+  <nav class="instructor-bar">
+    <div class="inner-wrapper">
+      <label for="mode-select">view as:</label>
+      <select class="view-mode-select"id="mode-select" name="select">
+        <option value="1">Staff</option>
+        <option value="2">Student in Learning Group A</option>
+        <option value="3">Student in Learning Group B</option>
+      </select>
+    </div>
+  </nav>
+% endif
+
 % if disable_tabs is UNDEFINED or not disable_tabs:
 <nav class="${active_page} course-material">
   <div class="inner-wrapper">
