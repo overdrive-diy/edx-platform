@@ -673,6 +673,7 @@ STATIC_ROOT = ENV_ROOT / "staticfiles"
 STATICFILES_DIRS = [
     COMMON_ROOT / "static",
     PROJECT_ROOT / "static",
+    PROJECT_ROOT / "../../themes/default/static/",
 ]
 
 FAVICON_PATH = 'images/favicon.ico'
