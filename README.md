@@ -6,3 +6,4 @@ Principais Modificações:
 ------------
 Environments do django modificados para incluir a pesquisa por arquivos staticos às pastas do tema
 
+TESTE
