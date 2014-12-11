@@ -1,8 +1,6 @@
 // studio - base styling
 // ====================
 
-@import url(http://fonts.googleapis.com/css?family=Roboto:400,300,500,700);
-
 // basic setup
 html {
   font-size: 62.5%;
@@ -13,11 +11,11 @@ body {
   @extend %t-copy-base;
   min-width: $fg-min-width;
   background: $gray-l5;
-  color: 'white' !important;
+  color: $gray-d2;
 }
 
 body, input, button {
-  font-family: 'Roboto', sans-serif;
+  font-family: 'Open Sans', sans-serif;
 }
 
 a {
@@ -750,5 +748,3 @@ body.js {
     }
   }
 }
-
-//Custom Style
