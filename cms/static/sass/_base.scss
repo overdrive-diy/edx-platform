@@ -777,3 +777,12 @@ body.js {
   background: #fad452 !important;
   border-color: #fad452 !important;
 }
+
+.xmodule_display.xmodule_CapaModule div.problem table caption, .xmodule_display.xmodule_CapaModule div.problem table th, .xmodule_display.xmodule_CapaModule div.problem table td{
+  border: 1px solid #ccc;
+  padding: 7px;
+}
+
+.xmodule_display.xmodule_CapaModule div.problem div div.equation{
+  display: none;
+}
