@@ -431,7 +431,7 @@ RSS_TIMEOUT = 600
 STATIC_GRAB = False
 DEV_CONTENT = True
 
-EDX_ROOT_URL = ''
+EDX_ROOT_URL = 'cursos.overdriveeletronica.com.br'
 
 LOGIN_REDIRECT_URL = EDX_ROOT_URL + '/accounts/login'
 LOGIN_URL = EDX_ROOT_URL + '/accounts/login'
