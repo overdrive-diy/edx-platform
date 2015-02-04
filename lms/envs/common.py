@@ -41,7 +41,7 @@ from lms.lib.xblock.mixin import LmsBlockMixin
 PLATFORM_NAME = "Cursos Overdrive"
 CC_MERCHANT_NAME = PLATFORM_NAME
 
-PLATFORM_FACEBOOK_ACCOUNT = "http://www.facebook.com/YourPlatformFacebookAccount"
+PLATFORM_FACEBOOK_ACCOUNT = "http://www.facebook.com/overdrive.diy"
 PLATFORM_TWITTER_ACCOUNT = "@YourPlatformTwitterAccount"
 PLATFORM_TWITTER_URL = "https://twitter.com/YourPlatformTwitterAccount"
 PLATFORM_MEETUP_URL = "http://www.meetup.com/YourMeetup"
@@ -655,14 +655,14 @@ ROOT_URLCONF = 'lms.urls'
 
 # Platform Email
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-DEFAULT_FROM_EMAIL = 'registration@example.com'
-DEFAULT_FEEDBACK_EMAIL = 'feedback@example.com'
-SERVER_EMAIL = 'devops@example.com'
-TECH_SUPPORT_EMAIL = 'technical@example.com'
-CONTACT_EMAIL = 'info@example.com'
-BUGS_EMAIL = 'bugs@example.com'
-UNIVERSITY_EMAIL = 'university@example.com'
-PRESS_EMAIL = 'press@example.com'
+DEFAULT_FROM_EMAIL = 'registro@overdriveeletronica.com'
+DEFAULT_FEEDBACK_EMAIL = 'feedback@overdriveeletronica.com'
+SERVER_EMAIL = 'devops@overdriveeletronica.com'
+TECH_SUPPORT_EMAIL = 'technical@overdriveeletronica.com'
+CONTACT_EMAIL = 'info@overdriveeletronica.com'
+BUGS_EMAIL = 'bugs@overdriveeletronica.com.br'
+UNIVERSITY_EMAIL = 'university@overdriveeletronica.com'
+PRESS_EMAIL = 'press@overdriveeletronica.com'
 ADMINS = ()
 MANAGERS = ADMINS
 

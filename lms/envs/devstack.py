@@ -12,7 +12,7 @@ MEDIA_ROOT = "/edx/var/edxapp/uploads"
 DEBUG = True
 USE_I18N = True
 TEMPLATE_DEBUG = True
-SITE_NAME = 'localhost:8000'
+SITE_NAME = 'cursos.overdriveeletronica.com.br'
 # By default don't use a worker, execute tasks as if they were local functions
 CELERY_ALWAYS_EAGER = True
 

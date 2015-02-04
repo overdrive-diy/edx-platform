@@ -273,7 +273,7 @@ SESSION_COOKIE_SECURE = False
 
 # Site info
 SITE_ID = 1
-SITE_NAME = "http://cursos.overdriveeletronica.com.br/"
+SITE_NAME = "cursos.overdriveeletronica.com.br"
 HTTPS = 'on'
 ROOT_URLCONF = 'cms.urls'
 

@@ -328,7 +328,7 @@ import openid.oidutil
 openid.oidutil.log = lambda message, level = 0: None
 
 PLATFORM_NAME = "edX"
-SITE_NAME = "edx.org"
+SITE_NAME = "cursos.overdriveeletronica.com.br"
 
 # set up some testing for microsites
 MICROSITE_CONFIGURATION = {
@@ -340,7 +340,7 @@ MICROSITE_CONFIGURATION = {
         "email_from_address": "test_microsite@edx.org",
         "payment_support_email": "test_microsite@edx.org",
         "ENABLE_MKTG_SITE": False,
-        "SITE_NAME": "test_microsite.localhost",
+        "SITE_NAME": "cursos.overdriveeletronica.com.br",
         "course_org_filter": "TestMicrositeX",
         "course_about_show_social_links": False,
         "css_overrides_file": "test_microsite/css/test_microsite.css",
