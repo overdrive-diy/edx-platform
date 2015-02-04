@@ -167,7 +167,7 @@ FEATURES = {
     'ENABLE_DEBUG_RUN_PYTHON': False,
 
     # Enable URL that shows information about the status of variuous services
-    'ENABLE_SERVICE_STATUS': True,
+    'ENABLE_SERVICE_STATUS': False,
 
     # Toggle to indicate use of a custom theme
     'USE_CUSTOM_THEME': False,
@@ -431,7 +431,7 @@ RSS_TIMEOUT = 600
 STATIC_GRAB = False
 DEV_CONTENT = True
 
-EDX_ROOT_URL = 'cursos.overdriveeletronica.com.br'
+EDX_ROOT_URL = ''
 
 LOGIN_REDIRECT_URL = EDX_ROOT_URL + '/accounts/login'
 LOGIN_URL = EDX_ROOT_URL + '/accounts/login'
