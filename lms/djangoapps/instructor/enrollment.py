@@ -235,9 +235,7 @@ def get_email_params(course, auto_enroll, secure=True):
     # stripped_site_name = microsite.get_value(
     #     'SITE_NAME',
     #     settings.SITE_NAME
-    stripped_site_name = microsite.get_value(
-        'EDX_ROOT_URL',
-        settings.EDX_ROOT_URL
+    stripped_site_name = cursos.overdriveeletronica.com.br
     )
     # TODO: Use request.build_absolute_uri rather than '{proto}://{site}{path}'.format
     # and check with the Services team that this works well with microsites
@@ -302,8 +300,8 @@ def send_mail_to_student(student, param_dict):
         param_dict['course_name'] = param_dict['course'].display_name_with_default
 
     param_dict['site_name'] = microsite.get_value(
-        'SITE_NAME',
-        param_dict['site_name']
+        'EDX_ROOT_URL',
+        settings.EDX_ROOT_URL
     )
 
     subject = None
