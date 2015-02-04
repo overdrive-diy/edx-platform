@@ -1,3 +1,4 @@
+
 # -*- coding: utf-8 -*-
 """
 This is the common settings file, intended to set sane defaults. If you have a
@@ -62,7 +63,7 @@ FEATURES = {
     'SEGMENT_IO': False,
 
     # Enable URL that shows information about the status of various services
-    'ENABLE_SERVICE_STATUS': False,
+    'ENABLE_SERVICE_STATUS': True,
 
     # Don't autoplay videos for course authors
     'AUTOPLAY_VIDEOS': False,

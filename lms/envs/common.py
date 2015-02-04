@@ -167,7 +167,7 @@ FEATURES = {
     'ENABLE_DEBUG_RUN_PYTHON': False,
 
     # Enable URL that shows information about the status of variuous services
-    'ENABLE_SERVICE_STATUS': False,
+    'ENABLE_SERVICE_STATUS': True,
 
     # Toggle to indicate use of a custom theme
     'USE_CUSTOM_THEME': False,
