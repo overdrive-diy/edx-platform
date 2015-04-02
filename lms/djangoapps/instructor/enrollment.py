@@ -233,8 +233,8 @@ def get_email_params(course, auto_enroll, secure=True):
     protocol = 'https' if secure else 'http'
 
     stripped_site_name = microsite.get_value(
-        'SITE_NAME',
-        settings.SITE_NAME
+        'EDX_ROOT_URL',
+        settings.EDX_ROOT_URL
     )
     # TODO: Use request.build_absolute_uri rather than '{proto}://{site}{path}'.format
     # and check with the Services team that this works well with microsites
